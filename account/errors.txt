@@ -1,0 +1,2 @@
+users are able to register one or more accounts with the same email, this can cause problems,
+when authenticating a user using email address.
