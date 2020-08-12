@@ -1,13 +1,14 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from django.urls import reverse 
 
 # Create your models here.
 # Model to store Image retrieved from different sites
 class Image(models.Model):
      user = models.ForeignKey(settings.AUTH_USER_MODEL,related_name="images_created", on_delete= models.CASCADE) # this specifies a one-to-many relationship
-     title = models.CharField(max_length=200) # a title for the image
-     slug = models.SlugField(max_length=200, blank=True) #  A short label that contains only letters, numbers, underscores, or hyphens to be used for building beautiful SEO-friendly URLs. 
+     title = models.CharField(max_length=5000) # a title for the image
+     slug = models.SlugField(max_length=5000, blank=True) #  A short label that contains only letters, numbers, underscores, or hyphens to be used for building beautiful SEO-friendly URLs. 
      url = models.URLField() #  The original URL for this image. 
      image = models.ImageField(upload_to='images/%Y/%m/%d/') #  The image file. 
      description = models.TextField(blank=True) #  An optional description for the image. 
@@ -22,4 +23,7 @@ class Image(models.Model):
      def save(self, *args, **kwargs):
         if not self.slug:
                self.slug = slugify(self.title)
-               super().save(*args, **Kwargs)
+        super().save(*args, **kwargs)
+
+     def get_absolute_url(self):
+          return reverse('images:detail', args=[self.id, self.slug])
